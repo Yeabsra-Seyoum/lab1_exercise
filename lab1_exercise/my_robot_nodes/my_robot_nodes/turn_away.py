@@ -4,45 +4,38 @@ from geometry_msgs.msg import Twist
 from lab_interfaces.msg import ObstacleInfo
 
 
-class TurnAwayNode(Node):
+class TurnAway(Node):
     def __init__(self):
         super().__init__('turn_away')
+        # Declare parameters with default values
+        self.declare_parameter('forward_speed', 0.2)
+        self.declare_parameter('turn_speed', 0.5)
 
-        # Publisher to drive commands
-        self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
+        self.cmd_vel = self.create_publisher(Twist, 'cmd_vel', 10)
+        self.create_subscription(ObstacleInfo, 'obstacle', self.on_obstacle, 10)
 
-        # Subscriber to obstacle detector
-        self.obstacle_sub = self.create_subscription(
-            ObstacleInfo,
-            '/obstacle',
-            self.obstacle_callback,
-            10
-        )
-        self.get_logger().info('turn_away node started.')
+    def on_obstacle(self, msg: ObstacleInfo):
+        # Read parameters on every message arrival
+        forward_speed = self.get_parameter('forward_speed').value
+        turn_speed = self.get_parameter('turn_speed').value
 
-    def obstacle_callback(self, msg: ObstacleInfo):
         twist = Twist()
-
         if not msg.too_close:
-            # Path is clear: drive straight ahead
-            twist.linear.x = 0.2
+            twist.linear.x = float(forward_speed)
             twist.angular.z = 0.0
         else:
-            # Obstacle detected: stop forward motion and turn away
             twist.linear.x = 0.0
             if msg.angle > 0.0:
-                # Obstacle on the left -> turn right
-                twist.angular.z = -0.5
+                twist.angular.z = -float(turn_speed)
             else:
-                # Obstacle on the right or center -> turn left
-                twist.angular.z = 0.5
+                twist.angular.z = float(turn_speed)
 
-        self.cmd_vel_pub.publish(twist)
+        self.cmd_vel.publish(twist)
 
 
 def main(args=None):
     rclpy.init(args=args)
-    node = TurnAwayNode()
+    node = TurnAway()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
