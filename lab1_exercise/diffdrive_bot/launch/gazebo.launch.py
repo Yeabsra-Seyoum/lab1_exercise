@@ -37,6 +37,7 @@ def generate_launch_description():
     gazebo_server = ExecuteProcess(
         cmd=["gz", "sim", "-s", "-r", os.path.join(pkg_share, "worlds", "obstacles.sdf")],
         name="gazebo_server",
+        additional_env={"GZ_CONFIG_PATH": "/usr/share/gz"},
         output="screen",
         on_exit=Shutdown(),
     )
@@ -45,6 +46,7 @@ def generate_launch_description():
     gazebo_gui = ExecuteProcess(
         cmd=["gz", "sim", "-g"],
         name="gazebo_gui",
+        additional_env={"GZ_CONFIG_PATH": "/usr/share/gz"},
         output="screen",
         on_exit=Shutdown(),
     )
