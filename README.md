@@ -24,7 +24,8 @@ lab1_exercise/
 ├── lab_interfaces/            # ObstacleInfo message, SetSpeed service, DriveDistance action
 ├── my_robot_interfaces/       # RobotStatus message, SetTurnSpeed service, Rotate action
 ├── my_robot_nodes/            # Turn away behavior, rotate server, square driver, launch file
-└── images/                    # Screenshots used to verify the lab
+├── rqt_graph.png               # Screenshot of the ROS node graph
+└── rviz_depth_pointcloud.png   # Screenshot of the depth image and point cloud
 ```
 
 ## Prerequisites & Build Instructions
@@ -78,7 +79,7 @@ depth image display. If the displays are not already configured, add **PointClou
 displays and select the corresponding camera topics from their topic lists. The point cloud should
 show nearby surfaces, and the depth image should change as obstacles appear at different distances.
 
-![RViz Depth & Point Cloud](images/rviz_depth_pointcloud.png)
+![RViz Depth & Point Cloud](rviz_depth_pointcloud.png)
 
 ### Step 2 & 3: Custom Message & Status Publisher
 
@@ -168,7 +169,7 @@ server, and the square driver. The driver sends four `DriveDistance` goals, each
 `Rotate` goal for a left quarter turn. A successful run logs `Square trajectory completed
 successfully!` after completing all four sides.
 
-![rqt_graph](images/rqt_graph_square.png)
+![rqt_graph](rqt_graph.png)
 
 ## What Did Not Work and Technical Analysis
 
